@@ -1,18 +1,7 @@
-/// @file    DemoReel100.ino
-/// @brief   FastLED "100 lines of code" demo reel, showing off some effects
-/// @example DemoReel100.ino
+/// @file    infinity-mirror.ino
+/// @brief   firmware for an interactive infinity mirror, using FastLED and a WS2811 LED strip
 
 #include <FastLED.h>
-
-// FastLED "100-lines-of-code" demo reel, showing just a few 
-// of the kinds of animation patterns you can quickly and easily 
-// compose using FastLED.  
-//
-// This example also shows one easy way to define multiple 
-// animations patterns and have them automatically rotate.
-//
-// -Mark Kriegsman, December 2014
-
 
 #define DATA_PIN    9
 #define POT1_PIN A2
@@ -20,8 +9,6 @@
 #define BUTTON1_PIN 3
 #define BUTON2_PIN 7
 
-
-//#define CLK_PIN   4
 #define LED_TYPE    WS2811
 #define COLOR_ORDER GRB
 #define NUM_LEDS    15
@@ -31,13 +18,10 @@ CRGB leds[NUM_LEDS];
 #define FRAMES_PER_SECOND  120
 
 void setup() {
-  delay(3000); // 3 second delay for recovery
+  delay(3000);
   
-  // tell FastLED about the LED strip configuration
   FastLED.addLeds<LED_TYPE,DATA_PIN,COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
-  //FastLED.addLeds<LED_TYPE,DATA_PIN,CLK_PIN,COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
 
-  // set master brightness control
   FastLED.setBrightness(BRIGHTNESS);
 }
 
@@ -46,17 +30,14 @@ void setup() {
 typedef void (*SimplePatternList[])();
 SimplePatternList gPatterns = { rainbow, testing};
 
-uint8_t gCurrentPatternNumber = 0; // Index number of which pattern is current
-uint8_t gHue = 0; // rotating "base color" used by many of the patterns
+uint8_t gCurrentPatternNumber = 0;
+uint8_t gHue = 0;
   
 void loop()
 {
-  // Call the current pattern function once, updating the 'leds' array
   gPatterns[gCurrentPatternNumber]();
 
-  // send the 'leds' array out to the actual LED strip
   FastLED.show();  
-  // insert a delay to keep the framerate modest
   FastLED.delay(1000/FRAMES_PER_SECOND); 
 
   if (readButtonInput(BUTTON1_PIN))
@@ -65,14 +46,13 @@ void loop()
   }
 
   // do some periodic updates
-  // EVERY_N_MILLISECONDS( 20 ) { gHue++; } // slowly cycle the "base color" through the rainbow
+  EVERY_N_MILLISECONDS( 20 ) { gHue++; } // slowly cycle the "base color" through the rainbow
 }
 
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
 
 void nextPattern()
 {
-  // add one to the current pattern number, and wrap around at the end
   gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE( gPatterns);
 }
 
@@ -94,7 +74,6 @@ void rainbow()
 
 void rainbowWithGlitter() 
 {
-  // built-in FastLED rainbow, plus some random sparkly glitter
   rainbow();
   addGlitter(80);
 }
