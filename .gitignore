@@ -1,1 +1,3 @@
+# Ignore machine specific Visual Studio Code settings for C/C++ projects
+
 .vscode/c_cpp_properties.json
